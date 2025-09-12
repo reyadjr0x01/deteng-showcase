@@ -1,0 +1,32 @@
+title: AppArmor Manipulation Detection
+id: 1f2b3c4d-5678-90ab-cdef-1234567890ab
+status: experimental
+description: Detects attempts to manipulate AppArmor profiles or load kmod modules using AppArmor-related commands.
+author: Ahmed Reyad
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection1:
+        Image|contains: "kmod"
+        CommandLine|contains: "apparmor"
+    selection2:
+        CommandLine|contains|all: 
+            - "apparmor"
+            - "stop"
+    selection3:
+        CommandLine|contains|all: 
+            - "apparmor"
+            - "disable"
+    selection_show:
+        CommandLine|contains: "show"
+    condition: selection1 or ((selection2 or selection3) and not selection_show)
+fields:
+    - CommandLine
+    - Image
+falsepositives:
+    - Legitimate administrative activity
+level: high
+tags:
+    - attack.defense_evasion
+    - attack.t1562.001
