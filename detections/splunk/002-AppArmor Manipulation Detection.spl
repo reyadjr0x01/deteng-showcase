@@ -1,0 +1,5 @@
+index=linux_sysmon OR index=process_logs
+ParentImage="/usr/bin/bash" Image != "/usr/bin/grep"
+CommandLine="*apparmor*"
+| table _time, host, user, ParentImage, Image, CommandLine, ParentCommandLine, process_id
+| sort - _time
