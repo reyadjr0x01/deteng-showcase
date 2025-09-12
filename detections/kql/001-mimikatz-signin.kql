@@ -1,1 +1,5 @@
+SecurityEvent
+| where EventID == 4688
+| where tostring(NewProcessName) has "mimikatz"
+| project TimeGenerated, Computer, Account, NewProcessName, ProcessCommandLine, ParentProcessName
 
