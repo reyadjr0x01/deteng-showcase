@@ -1,1 +1,24 @@
+title: Detect Mimikatz Process Creation
+id: d1a9b7f2-xxxx-4e6e-9c3b-EXAMPLE
+status: experimental
+description: Detect execution of mimikatz.exe by process creation events
+references:
+  - https://attack.mitre.org/software/S0002/
+author: Ahmed Reyad
+date: 2025-09-12
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4688
+    NewProcessName|contains:
+      - '\mimikatz.exe'
+      - '\mimikatz64.exe'
+  condition: selection
+fields:
+  - NewProcessName
+falsepositives:
+  - dual-use tools used by admin for legit purposes; verify context and parent process.
+level: high
 
