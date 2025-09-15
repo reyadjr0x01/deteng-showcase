@@ -1,0 +1,52 @@
+title: Attempting to Disable the Syslog Service
+id: b3d9f3b2-xxxx-xxxx-xxxx-0123456789ab
+description: Detect attempts to disable, stop or kill syslog daemons (rsyslog, syslog-ng, journald) to evade logging.
+status: experimental
+author: Reyad
+level: medium
+date: 2025-03-20
+tags:
+  - attack.persistence
+  - attack.defense_evasion
+  - linux
+logsource:
+  product: Linux
+  service: sysmon
+  category: process_creation
+detection:
+  selection_systemctl_disable:
+    Image|endswith: 'systemctl'
+    CommandLine|contains|all:
+      - 'disable'
+      - 'rsyslog'
+  selection_systemctl_stop:
+    Image|endswith: 'systemctl'
+    CommandLine|contains|all:
+      - 'stop'
+      - 'rsyslog'
+  selection_service_stop:
+    Image|endswith: 'service'
+    CommandLine|contains|all:
+      - 'rsyslog'
+      - 'stop'
+  selection_kill_rsyslog:
+    CommandLine|contains|all:
+      - 'kill'
+      - 'rsyslog'
+  selection_syslog_ng:
+    CommandLine|contains|any:
+      - 'syslog-ng'
+      - 'syslogng'
+  selection_journald_mask:
+    CommandLine|contains|any:
+      - 'systemctl mask systemd-journald'
+      - 'systemctl stop systemd-journald'
+  condition: selection_systemctl_disable or selection_systemctl_stop or selection_service_stop or selection_kill_rsyslog or selection_syslog_ng or selection_journald_mask
+fields:
+  - Image
+  - CommandLine
+  - User
+  - Computer
+falsepositives:
+  - Legitimate administrative activity (maintenance, debugging, config changes)
+level: medium
