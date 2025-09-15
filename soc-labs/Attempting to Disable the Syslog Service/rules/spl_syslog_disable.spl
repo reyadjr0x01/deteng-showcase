@@ -1,0 +1,7 @@
+(Image="*systemctl" AND (CommandLine="*disable*rsyslog*" OR CommandLine="*stop*rsyslog*"))
+ OR (Image="*dash*" AND CommandLine="*rsyslog*stop*")
+ OR (CommandLine="*kill*rsyslog*")
+ OR (CommandLine="*syslog-ng*" OR CommandLine="*syslogng*")
+ OR (CommandLine="*systemctl*mask*systemd-journald*" OR CommandLine="*systemctl*stop*systemd-journald*")
+| table User, Image, CommandLine, ProcessId, ProcessGuid
+| sort - _time
